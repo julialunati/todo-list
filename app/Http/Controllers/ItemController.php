@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Models\Item;
+
 
 
 class ItemController extends Controller
@@ -36,11 +38,18 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-       $newItem = new Item;
-       $newItem->name = $request->item["name"];
-       $newItem->save();
 
-       return $newItem;
+        $newItem = new Item;
+        $newItem->name = $request->item["name"];
+        $newItem->save();
+
+        return $newItem;
+
+        //    $newItem = Item::create(
+        //        $request->only(['name'])
+        //    );
+
+        //    return $newItem;
     }
 
     /**
@@ -74,7 +83,15 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $existingItem = Item::find($id);
+        if ($existingItem) {
+            $existingItem->completed = $request->item['completed'] ? true : false;
+            $existingItem->completed_at = $request->item['completed'] ? Carbon::now() : null;
+            $existingItem->save();
+            return $existingItem;
+        }
+
+        return "Item is not found";
     }
 
     /**
@@ -85,6 +102,10 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $existingItem = Item::find($id);
+        if ($existingItem->delete()) {
+            return "Item successfully deleted";
+        }
+        return "Item is not found";
     }
 }
