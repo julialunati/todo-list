@@ -4,7 +4,9 @@
       <h2 id="title">Todo List</h2>
       <add-item-form />
     </div>
-    <list-view />
+    <list-view 
+    :items="items"
+    v-on:reloadList="getList()"/>
   </div>
 </template>
 
@@ -16,21 +18,39 @@ export default {
     addItemForm,
     listView,
   },
+  data: function(){
+      return{
+          items:[]
+      }
+  },
+  methods:{
+      getList(){
+          axios.get('api/items')
+          .then(response =>{
+              this.items = response.data
+          })
+          .catch(error => {
+              console.log(error);
+          })
+      }
+  },
+    created(){
+        this.getList();
+    }
 };
 </script>
 <style scoped>
-.todoListContainer{
-    width: 350px;
-    margin: auto;
+.todoListContainer {
+  width: 350px;
+  margin: auto;
 }
 
-.heading{
-    background: lightblue;
-    padding:10px;
+.heading {
+  background: #e6e6e6;
+  padding: 10px;
 }
 
-#title{
-    text-align: center;
+#title {
+  text-align: center;
 }
-
 </style>
