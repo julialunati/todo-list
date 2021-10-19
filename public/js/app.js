@@ -12179,7 +12179,9 @@ __webpack_require__.r(__webpack_exports__);
         item: this.item
       }).then(function (response) {
         if (response.status == 201) {
-          _this.item.name == "";
+          _this.item.name = '';
+
+          _this.$emit('reloadList');
         }
       })["catch"](function (error) {
         console.log(error);
@@ -12203,6 +12205,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _addItemForm_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./addItemForm.vue */ "./resources/js/vue/addItemForm.vue");
 /* harmony import */ var _listView_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./listView.vue */ "./resources/js/vue/listView.vue");
+//
 //
 //
 //
@@ -12281,6 +12284,17 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         if (response.status == 200) {
           _this.$emit('itemChanged');
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    removeItem: function removeItem() {
+      var _this2 = this;
+
+      axios["delete"]('api/item/' + this.item.id).then(function (response) {
+        if (response.status == 200) {
+          _this2.$emit('itemChanged');
         }
       })["catch"](function (error) {
         console.log(error);
@@ -30811,7 +30825,13 @@ var render = function() {
         [
           _c("h2", { attrs: { id: "title" } }, [_vm._v("Todo List")]),
           _vm._v(" "),
-          _c("add-item-form")
+          _c("add-item-form", {
+            on: {
+              reloadList: function($event) {
+                return _vm.getList()
+              }
+            }
+          })
         ],
         1
       ),
